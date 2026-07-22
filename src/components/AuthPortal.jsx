@@ -9,9 +9,9 @@ import RegisterView from './RegisterView';
 import ForgotPasswordView from './ForgotPasswordView';
 import ResetPasswordView from './ResetPasswordView';
 
-import axios from 'axios';
 
-const BASE_URL = axios.create({ baseURL: import.meta.env.API_BASE_URL });
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log("wouysvdhcbnxmw", BASE_URL)
 
 export default function AuthPortal() {
   const [view, setView] = useState('login'); // login | register | forgot | reset
