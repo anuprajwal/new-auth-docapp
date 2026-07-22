@@ -9,7 +9,9 @@ import RegisterView from './RegisterView';
 import ForgotPasswordView from './ForgotPasswordView';
 import ResetPasswordView from './ResetPasswordView';
 
-const BASE_URL = 'https://landing.docapp.co.in/api/auth';
+import axios from 'axios';
+
+const BASE_URL = axios.create({ baseURL: import.meta.env.API_BASE_URL });
 
 export default function AuthPortal() {
   const [view, setView] = useState('login'); // login | register | forgot | reset
