@@ -233,22 +233,22 @@ export default function AuthPortal() {
 
     // Subdomain Redirection Debugging
     console.log("Preparing redirection based on role...");
-    // setTimeout(() => {
-    //   let targetUrl = '';
-    //   if (role === 'general_user') {
-    //     targetUrl = 'https://users.docapp.co.in';
-    //   } else if (role === 'doctor') {
-    //     targetUrl = 'https://doctors.docapp.co.in';
-    //   } else if (role === 'hospital_admin') {
-    //     targetUrl = 'https://hospitals.docapp.co.in';
-    //   }
+    setTimeout(() => {
+      let targetUrl = '';
+      if (role === 'general_user') {
+        targetUrl = 'https://users.docapp.co.in';
+      } else if (role === 'doctor') {
+        targetUrl = 'https://doctors.docapp.co.in';
+      } else if (role === 'hospital_admin') {
+        targetUrl = 'https://hospitals.docapp.co.in';
+      }
 
-    //   console.log(`🚀 Redirecting now to: ${targetUrl} for role: ${role}`);
+      console.log(`🚀 Redirecting now to: ${targetUrl} for role: ${role}`);
       
-    //   // Uncomment this line when you want to execute the redirect. 
-    //   // Keeping it commented out or visible helps you read the logs first!
-    //   window.location.href = targetUrl;
-    // }, 2000); // Bumped to 2 seconds so you have time to read the console logs
+      // Uncomment this line when you want to execute the redirect. 
+      // Keeping it commented out or visible helps you read the logs first!
+      window.location.href = targetUrl;
+    }, 2000); // Bumped to 2 seconds so you have time to read the console logs
 
   } catch (err) { 
     console.error("❌ Login Error Caught:", err.message);
