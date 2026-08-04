@@ -74,7 +74,7 @@ export default function AuthPortal() {
         targetUrl = 'https://users.docapp.co.in';
       } else if (role === 'doctor') {
         targetUrl = 'https://doctors.docapp.co.in';
-      } else if (role === 'hospital_admin') {
+      } else if (role === 'hospital_organisation') {
         targetUrl = 'https://hospitals.docapp.co.in';
       }
 
