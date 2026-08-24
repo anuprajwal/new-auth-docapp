@@ -4,7 +4,7 @@ export default function RoleTabs({ currentRole, onRoleChange }) {
   const roles = [
     { id: 'general_user', label: 'Patient' },
     { id: 'doctor', label: 'Doctor' },
-    { id: 'organisation', label: 'Admin' }
+    { id: 'hospital_organisation', label: 'Hospital' }
   ];
 
   return (
