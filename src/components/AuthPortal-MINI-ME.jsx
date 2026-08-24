@@ -51,6 +51,8 @@ export default function AuthPortal() {
       console.warn("⚠️ WARNING: 'data.token' is missing or undefined from the backend response!");
       console.log("Check if clientType is 'web': Current clientType is ->", data.clientType);
       
+      // If your backend sets the cookie via Set-Cookie headers directly for 'web', 
+      // it won't be visible in javascript data.token. Let's check if document.cookie updated:
       console.log("Current document.cookie state:", document.cookie);
     } else {
       console.log("✅ Token received successfully:", data.token.substring(0, 15) + "...");
@@ -72,14 +74,16 @@ export default function AuthPortal() {
         targetUrl = 'https://users.docapp.co.in';
       } else if (role === 'doctor') {
         targetUrl = 'https://doctors.docapp.co.in';
-      } else if (role === 'hospital_admin') {
+      } else if (role === 'hospital_organisation') {
         targetUrl = 'https://hospitals.docapp.co.in';
       }
 
       console.log(`🚀 Redirecting now to: ${targetUrl} for role: ${role}`);
       
+      // Uncomment this line when you want to execute the redirect. 
+      // Keeping it commented out or visible helps you read the logs first!
       window.location.href = targetUrl;
-    }, 500);
+    }, 2000); // Bumped to 2 seconds so you have time to read the console logs
 
   } catch (err) { 
     console.error("❌ Login Error Caught:", err.message);
@@ -98,7 +102,7 @@ export default function AuthPortal() {
         body: JSON.stringify({ ...payload, role }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Registration failed.');
+      if (!response.ok) throw new Error(data.message || 'Registration failed.');
 
       setSuccess('Account generated successfully! Forwarding to login...');
       setTimeout(() => handleViewChange('login'), 1500);
