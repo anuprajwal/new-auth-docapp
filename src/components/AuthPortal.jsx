@@ -22,21 +22,24 @@ export default function AuthPortal() {
   
   const [contextData, setContextData] = useState({ id: '', hash: '' });
 
-  // Detect URL path parameters for password reset
+  // Robust path extractor for bcrypt hashes and IDs
   useEffect(() => {
-    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    // 1. Decode the full raw pathname (handles %24 -> $)
+    const fullPath = decodeURIComponent(window.location.pathname);
     
-    // Handles both:
-    // 1) ["api", "auth", "$2b$10$...", "26"] -> length >= 4
-    // 2) ["$2b$10$...", "26"] -> length === 2
-    if (pathSegments.length >= 2) {
-      const idParam = pathSegments[pathSegments.length - 1]; // Last segment is ID
-      const hashParam = pathSegments[pathSegments.length - 2]; // Second-to-last is Hash
+    // 2. Extract segments cleanly by splitting on forward slashes
+    const segments = fullPath.split('/').filter(Boolean);
 
-      if (idParam && hashParam && hashParam.startsWith('$2b$')) {
+    // 3. Match format: /:hash/:id or /api/auth/:hash/:id
+    if (segments.length >= 2) {
+      const idCandidate = segments[segments.length - 1];
+      const hashCandidate = segments[segments.length - 2];
+
+      // Bcrypt hash signatures always start with $2a$, $2b$, or $2y$
+      if (idCandidate && hashCandidate && (hashCandidate.startsWith('$2b$') || hashCandidate.startsWith('$2a$') || hashCandidate.startsWith('$2y$'))) {
         setContextData({
-          id: decodeURIComponent(idParam),
-          hash: decodeURIComponent(hashParam)
+          id: idCandidate,
+          hash: hashCandidate
         });
         setView('reset');
       }
@@ -141,11 +144,15 @@ export default function AuthPortal() {
     const { id, hash } = contextData;
 
     try {
-      const response = await fetch(`${BASE_URL}/change-forgoten-password/${encodeURIComponent(hash)}/${encodeURIComponent(id)}`, {
+      // Send the hash and id extracted from URL parameters in the endpoint path
+      const targetEndpoint = `${BASE_URL}/change-forgoten-password/${encodeURIComponent(hash)}/${encodeURIComponent(id)}`;
+      
+      const response = await fetch(targetEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPassword }),
       });
+      
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to reset password. Link may be expired.');
 
@@ -176,6 +183,7 @@ export default function AuthPortal() {
           </p>
         </div>
 
+        {/* Hide role tabs when resetting password */}
         {view !== 'reset' && <RoleTabs currentRole={role} onRoleChange={setRole} />}
         
         <Alert type={error ? 'error' : 'success'} message={error || success} />
