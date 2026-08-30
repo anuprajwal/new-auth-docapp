@@ -1,3 +1,5 @@
+// src/components/AuthPortal.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Lock, User } from 'lucide-react';
 import { setAuthCookie } from '../utils/cookieHelper';
@@ -20,13 +22,24 @@ export default function AuthPortal() {
   
   const [contextData, setContextData] = useState({ id: '', hash: '' });
 
-  // Detect URL path format: /:password_hash/:id on initial load
+  // Detect URL path parameters for password reset
   useEffect(() => {
     const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    
+    // Handles both:
+    // 1) ["api", "auth", "$2b$10$...", "26"] -> length >= 4
+    // 2) ["$2b$10$...", "26"] -> length === 2
     if (pathSegments.length >= 2) {
-      const [hashParam, idParam] = pathSegments;
-      setContextData({ hash: decodeURIComponent(hashParam), id: decodeURIComponent(idParam) });
-      setView('reset');
+      const idParam = pathSegments[pathSegments.length - 1]; // Last segment is ID
+      const hashParam = pathSegments[pathSegments.length - 2]; // Second-to-last is Hash
+
+      if (idParam && hashParam && hashParam.startsWith('$2b$')) {
+        setContextData({
+          id: decodeURIComponent(idParam),
+          hash: decodeURIComponent(hashParam)
+        });
+        setView('reset');
+      }
     }
   }, []);
 
@@ -113,7 +126,7 @@ export default function AuthPortal() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Unable to process request.');
 
-      return true; // Signals ForgotPasswordView to display the confirmation card
+      return true;
     } catch (err) { 
       setError(err.message); 
       return false;
