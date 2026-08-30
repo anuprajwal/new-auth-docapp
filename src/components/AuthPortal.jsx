@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lock, User } from 'lucide-react';
 import { setAuthCookie } from '../utils/cookieHelper';
 
@@ -20,77 +20,69 @@ export default function AuthPortal() {
   
   const [contextData, setContextData] = useState({ id: '', hash: '' });
 
+  // Detect URL path format: /:password_hash/:id on initial load
+  useEffect(() => {
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length >= 2) {
+      const [hashParam, idParam] = pathSegments;
+      setContextData({ hash: decodeURIComponent(hashParam), id: decodeURIComponent(idParam) });
+      setView('reset');
+    }
+  }, []);
+
   const resetMessages = () => { setError(''); setSuccess(''); };
-  const handleViewChange = (newView) => { resetMessages(); setView(newView); };
+  
+  const handleViewChange = (newView) => {
+    resetMessages();
+    if (newView === 'login') {
+      window.history.pushState({}, '', '/');
+    }
+    setView(newView);
+  };
 
   const onLogin = async (payload) => {
-  setLoading(true); 
-  resetMessages();
-  
-  console.log("=== [LOGIN START] ===");
-  console.log("Selected Role:", role);
-  console.log("Payload being sent:", payload);
+    setLoading(true); 
+    resetMessages();
 
-  try {
-    const response = await fetch(`${BASE_URL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...payload, role }),
-    });
+    try {
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, role }),
+      });
 
-    console.log("HTTP Response Status:", response.status);
-    const data = await response.json();
-    console.log("Full Backend JSON Response Data:", data);
+      const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Invalid credentials.');
-    }
-    
-    // DEBUGGING THE BACKEND TOKEN ISSUE
-    if (!data.token) {
-      console.warn("⚠️ WARNING: 'data.token' is missing or undefined from the backend response!");
-      console.log("Check if clientType is 'web': Current clientType is ->", data.clientType);
-      
-      console.log("Current document.cookie state:", document.cookie);
-    } else {
-      console.log("✅ Token received successfully:", data.token.substring(0, 15) + "...");
-      
-      // Attempting to set cookie
-      console.log("Calling setAuthCookie...");
-      setAuthCookie('auth_token', data.token, 7);
-      
-      console.log("Cookies available immediately after setting:", document.cookie);
-    }
-    
-    setSuccess('Login successful! Transporting to secure panel...');
-
-    // Subdomain Redirection Debugging
-    console.log("Preparing redirection based on role...");
-    setTimeout(() => {
-      let targetUrl = '';
-      if (role === 'general_user') {
-        targetUrl = 'https://users.docapp.co.in';
-      } else if (role === 'doctor') {
-        targetUrl = 'https://doctors.docapp.co.in';
-      } else if (role === 'hospital_organisation') {
-        targetUrl = 'https://hospitals.docapp.co.in';
+      if (!response.ok) {
+        throw new Error(data.message || 'Invalid credentials.');
       }
-
-      console.log(`🚀 Redirecting now to: ${targetUrl} for role: ${role}`);
       
-      window.location.href = targetUrl;
-    }, 500);
+      if (data.token) {
+        setAuthCookie('auth_token', data.token, 7);
+      }
+      
+      setSuccess('Login successful! Redirecting...');
 
-  } catch (err) { 
-    console.error("❌ Login Error Caught:", err.message);
-    setError(err.message); 
-  } finally { 
-    console.log("=== [LOGIN END] ===");
-    setLoading(false); 
-  }
-};
+      setTimeout(() => {
+        let targetUrl = 'https://users.docapp.co.in';
+        if (role === 'doctor') {
+          targetUrl = 'https://doctors.docapp.co.in';
+        } else if (role === 'hospital_organisation') {
+          targetUrl = 'https://hospitals.docapp.co.in';
+        }
+        window.location.href = targetUrl;
+      }, 500);
+
+    } catch (err) { 
+      setError(err.message); 
+    } finally { 
+      setLoading(false); 
+    }
+  };
+
   const onRegister = async (payload) => {
-    setLoading(true); resetMessages();
+    setLoading(true); 
+    resetMessages();
     try {
       const response = await fetch(`${BASE_URL}/register`, {
         method: 'POST',
@@ -100,14 +92,18 @@ export default function AuthPortal() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Registration failed.');
 
-      setSuccess('Account generated successfully! Forwarding to login...');
+      setSuccess('Account created successfully! Forwarding to login...');
       setTimeout(() => handleViewChange('login'), 1500);
-    } catch (err) { setError(err.message); } 
-    finally { setLoading(false); }
+    } catch (err) { 
+      setError(err.message); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   const onForgot = async (payload) => {
-    setLoading(true); resetMessages();
+    setLoading(true); 
+    resetMessages();
     try {
       const response = await fetch(`${BASE_URL}/forgot-password`, {
         method: 'POST',
@@ -115,30 +111,40 @@ export default function AuthPortal() {
         body: JSON.stringify({ ...payload, role }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Forgot request failed.');
+      if (!response.ok) throw new Error(data.message || 'Unable to process request.');
 
-      setSuccess('Verification tokens obtained.');
-      setContextData({ id: data.id || '', hash: data.password_hash || '' });
-      setView('reset');
-    } catch (err) { setError(err.message); } 
-    finally { setLoading(false); }
+      return true; // Signals ForgotPasswordView to display the confirmation card
+    } catch (err) { 
+      setError(err.message); 
+      return false;
+    } finally { 
+      setLoading(false); 
+    }
   };
 
-  const onReset = async ({ id, hash, newPassword }) => {
-    setLoading(true); resetMessages();
+  const onReset = async ({ newPassword }) => {
+    setLoading(true); 
+    resetMessages();
+    const { id, hash } = contextData;
+
     try {
-      const response = await fetch(`${BASE_URL}/change-forgoten-password/${hash}/${id}`, {
+      const response = await fetch(`${BASE_URL}/change-forgoten-password/${encodeURIComponent(hash)}/${encodeURIComponent(id)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPassword }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to reconfigure password.');
+      if (!response.ok) throw new Error(data.message || 'Failed to reset password. Link may be expired.');
 
-      setSuccess('Password updated successfully! Re-routing...');
-      setTimeout(() => handleViewChange('login'), 2000);
-    } catch (err) { setError(err.message); } 
-    finally { setLoading(false); }
+      setSuccess('Password updated successfully! Redirecting to login...');
+      setTimeout(() => {
+        handleViewChange('login');
+      }, 2000);
+    } catch (err) { 
+      setError(err.message); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   return (
@@ -164,7 +170,7 @@ export default function AuthPortal() {
         {view === 'login' && <LoginView onSubmit={onLogin} onNavigate={handleViewChange} loading={loading} currentRole={role} />}
         {view === 'register' && <RegisterView onSubmit={onRegister} onNavigate={handleViewChange} loading={loading} />}
         {view === 'forgot' && <ForgotPasswordView onSubmit={onForgot} onNavigate={handleViewChange} loading={loading} />}
-        {view === 'reset' && <ResetPasswordView onSubmit={onReset} onNavigate={handleViewChange} loading={loading} initialId={contextData.id} initialHash={contextData.hash} />}
+        {view === 'reset' && <ResetPasswordView onSubmit={onReset} onNavigate={handleViewChange} loading={loading} />}
       </div>
     </div>
   );

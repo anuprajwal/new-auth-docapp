@@ -2,32 +2,73 @@ import React, { useState } from 'react';
 import { Lock, Loader2 } from 'lucide-react';
 import InputField from './ui/InputField';
 
-export default function ResetPasswordView({ onSubmit, onNavigate, loading, initialId, initialHash }) {
-  const [id, setId] = useState(initialId || '');
-  const [hash, setHash] = useState(initialHash || '');
+export default function ResetPasswordView({ onSubmit, onNavigate, loading }) {
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [validationError, setValidationError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ id: id || 'default_id', hash: hash || 'default_hash', newPassword });
+    if (newPassword.length < 6) {
+      setValidationError('Password must be at least 6 characters long.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setValidationError('Passwords do not match.');
+      return;
+    }
+    setValidationError('');
+    onSubmit({ newPassword });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="block text-xs font-bold text-slate-600 uppercase mb-1 tracking-wide">ID Parameter</label>
-          <input type="text" placeholder="id" value={id} onChange={(e) => setId(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white" />
+      <p className="text-xs text-slate-500 text-center leading-relaxed">
+        Enter your new password below to reset your account access.
+      </p>
+
+      {validationError && (
+        <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-xl text-center">
+          {validationError}
         </div>
-        <div>
-          <label className="block text-xs font-bold text-slate-600 uppercase mb-1 tracking-wide">Hash Key</label>
-          <input type="text" placeholder="password_hash" value={hash} onChange={(e) => setHash(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white" />
-        </div>
-      </div>
-      <InputField label="New Secure Password" type="password" icon={Lock} placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-      <button type="submit" disabled={loading} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition disabled:opacity-50 flex justify-center items-center gap-2 text-sm">
-        {loading ? <Loader2 className="animate-spin" size={18} /> : 'Modify Account Password'}
+      )}
+
+      <InputField
+        label="New Password"
+        type="password"
+        icon={Lock}
+        placeholder="••••••••"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+      />
+
+      <InputField
+        label="Confirm New Password"
+        type="password"
+        icon={Lock}
+        placeholder="••••••••"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+      />
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+      >
+        {loading ? <Loader2 className="animate-spin" size={18} /> : 'Save New Password'}
       </button>
+
+      <div className="text-center text-xs text-slate-500 pt-2">
+        Cancel and return to{' '}
+        <button
+          type="button"
+          onClick={() => onNavigate('login')}
+          className="text-blue-600 font-bold hover:underline"
+        >
+          Sign In
+        </button>
+      </div>
     </form>
   );
 }
