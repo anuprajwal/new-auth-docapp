@@ -148,7 +148,7 @@ export default function AuthPortal() {
       const targetEndpoint = `${BASE_URL}/change-forgoten-password/${encodeURIComponent(hash)}/${encodeURIComponent(id)}`;
       
       const response = await fetch(targetEndpoint, {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPassword }),
       });
