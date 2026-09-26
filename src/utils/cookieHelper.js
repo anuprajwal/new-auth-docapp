@@ -23,6 +23,5 @@ export function setAuthCookie(name, value, days) {
     cookieString += "; SameSite=Lax";
   }
 
-  console.log("Attempting to write cookie:", cookieString); // Debug log
   document.cookie = cookieString;
 }
