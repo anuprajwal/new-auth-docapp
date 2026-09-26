@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Lock, User } from 'lucide-react';
-import { setAuthCookie } from '../utils/cookieHelper';
 
 import RoleTabs from './ui/RoleTabs';
 import Alert from './ui/Alert';
@@ -56,46 +55,6 @@ export default function AuthPortal() {
     setView(newView);
   };
 
-  // const onLogin = async (payload) => {
-  //   setLoading(true); 
-  //   resetMessages();
-
-  //   try {
-  //     const response = await fetch(`${BASE_URL}/login`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ ...payload, role }),
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (!response.ok) {
-  //       throw new Error(data.message || 'Invalid credentials.');
-  //     }
-      
-  //     if (data.token) {
-  //       setAuthCookie('auth_token', data.token, 7);
-  //     }
-      
-  //     setSuccess('Login successful! Redirecting...');
-
-  //     setTimeout(() => {
-  //       let targetUrl = 'https://users.docapp.co.in';
-  //       if (role === 'doctor') {
-  //         targetUrl = 'https://doctors.docapp.co.in';
-  //       } else if (role === 'hospital_organisation') {
-  //         targetUrl = 'https://hospitals.docapp.co.in';
-  //       }
-  //       window.location.href = targetUrl;
-  //     }, 500);
-
-  //   } catch (err) { 
-  //     setError(err.message); 
-  //   } finally { 
-  //     setLoading(false); 
-  //   }
-  // };
-
 
   const onLogin = async (payload) => {
     setLoading(true); 
@@ -139,7 +98,7 @@ export default function AuthPortal() {
   };
 
 
-  
+
   const onRegister = async (payload) => {
     setLoading(true); 
     resetMessages();
