@@ -19,7 +19,7 @@ export default function LoginView({ onSubmit, onNavigate, loading, currentRole }
       <div className="flex items-center justify-between text-xs font-semibold pt-1">
         <label className="flex items-center gap-2 text-slate-500 cursor-pointer">
           <input type="checkbox" className="rounded text-blue-600 border-slate-300 w-4 h-4" />
-          Remember me
+          Remember Me
         </label>
         <button type="button" onClick={() => onNavigate('forgot')} className="text-blue-600 hover:underline">Forgot Password?</button>
       </div>
