@@ -13,41 +13,45 @@ export default function App() {
         {/* Patient Routes */}
         <Route 
           path="/patient/login" 
-          element={<AuthPortal role="general_users" view="login" />} 
+          element={<AuthPortal role="general_user" view="login" />} 
         />
         <Route 
           path="/patient/register" 
-          element={<AuthPortal role="general_users" view="register" />} 
+          element={<AuthPortal role="general_user" view="register" />} 
         />
 
         {/* Doctor Routes */}
         <Route 
           path="/doctor/login" 
-          element={<AuthPortal role="doctors" view="login" />} 
+          element={<AuthPortal role="doctor" view="login" />} 
         />
         <Route 
           path="/doctor/register" 
-          element={<AuthPortal role="doctors" view="register" />} 
+          element={<AuthPortal role="doctor" view="register" />} 
         />
 
         {/* Hospital Routes */}
         <Route 
           path="/hospital/login" 
-          element={<AuthPortal role="hospital" view="login" />} 
+          element={<AuthPortal role="hospital_organisation" view="login" />} 
         />
         <Route 
           path="/hospital/register" 
-          element={<AuthPortal role="hospital" view="register" />} 
+          element={<AuthPortal role="hospital_organisation" view="register" />} 
         />
 
         {/* Utility / Password Management */}
         <Route 
-          path="/forgot-password" 
-          element={<AuthPortal role="general_users" view="forgot" />} 
+          path="/user/forgot-password" 
+          element={<AuthPortal role="general_user" view="forgot" />} 
         />
         <Route 
-          path="/reset-password/*" 
-          element={<AuthPortal role="general_users" view="reset" />} 
+          path="/doctor/forgot-password" 
+          element={<AuthPortal role="doctor" view="forgot" />} 
+        />
+        <Route 
+          path="/hospital/forgot-password" 
+          element={<AuthPortal role="hospital_organisation" view="forgot" />} 
         />
 
         {/* Catch-all Fallback */}
