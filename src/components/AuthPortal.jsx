@@ -227,12 +227,11 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
             currentRole={role}
           />
         )}
-        {view === 'user-forgot' || view === 'doctor-forgot' || view === 'hospital-forgot' && (
+        {view === 'forgot' && (
           <ForgotPasswordView
             onSubmit={onForgot}
             onNavigate={handleViewChange}
             loading={loading}
-            currentRole={role}
           />
         )}
         {view === 'reset' && (
@@ -240,7 +239,6 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
             onSubmit={onReset}
             onNavigate={handleViewChange}
             loading={loading}
-            currentRole={role}
           />
         )}
       </div>

@@ -43,15 +43,30 @@ export default function App() {
         {/* Utility / Password Management */}
         <Route 
           path="/user/forgot-password" 
-          element={<AuthPortal role="general_user" view="user-forgot" />} 
+          element={<AuthPortal role="general_user" view="forgot" />} 
         />
         <Route 
           path="/doctor/forgot-password" 
-          element={<AuthPortal role="doctor" view="doctor-forgot" />} 
+          element={<AuthPortal role="doctor" view="forgot" />} 
         />
         <Route 
           path="/hospital/forgot-password" 
-          element={<AuthPortal role="hospital_organisation" view="hospital-forgot" />} 
+          element={<AuthPortal role="hospital_organisation" view="forgot" />} 
+        />
+
+
+        {/* Password Reset Route with Hash and ID */}
+        <Route 
+          path="/user/reset-password/:hash/:id"
+          element={<AuthPortal role="general_user" view="reset" />}
+        />
+        <Route 
+          path="/doctor/reset-password/:hash/:id"
+          element={<AuthPortal role="doctor" view="reset" />}
+        />
+        <Route 
+          path="/hospital/reset-password/:hash/:id"
+          element={<AuthPortal role="hospital_organisation" view="reset" />}
         />
 
         {/* Catch-all Fallback */}
