@@ -21,17 +21,14 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
   const [success, setSuccess] = useState('');
   const [contextData, setContextData] = useState({ id: '', hash: '' });
 
-  // Extract hash & id for password reset from URL path
   useEffect(() => {
     const fullPath = decodeURIComponent(location.pathname);
     const segments = fullPath.split('/').filter(Boolean);
 
-    console.log('Current Path:', fullPath);
-    console.log('Path Segments:', segments);
-
     if (segments.length >= 2) {
       const idCandidate = segments[segments.length - 1];
-      const hashCandidate = segments[segments.length - 2];
+
+      const hashCandidate = segments.slice(0, segments.length - 1).join('/');
 
       if (
         idCandidate &&
