@@ -26,6 +26,9 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
     const fullPath = decodeURIComponent(location.pathname);
     const segments = fullPath.split('/').filter(Boolean);
 
+    console.log('Current Path:', fullPath);
+    console.log('Path Segments:', segments);
+
     if (segments.length >= 2) {
       const idCandidate = segments[segments.length - 1];
       const hashCandidate = segments[segments.length - 2];
