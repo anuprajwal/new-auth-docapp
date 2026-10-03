@@ -12,7 +12,7 @@ import ResetPasswordView from './ResetPasswordView';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export default function AuthPortal({ role = 'general_users', view = 'login' }) {
+export default function AuthPortal({ role = 'general_user', view = 'login' }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -50,8 +50,16 @@ export default function AuthPortal({ role = 'general_users', view = 'login' }) {
   // Switch between Login, Register, or Forgot view while retaining the current role route prefix
   const handleViewChange = (newView) => {
     resetMessages();
-    if (newView === 'forgot') {
-      navigate('/forgot-password');
+    if (newView === 'user-forgot') {
+      navigate('/user/forgot-password');
+      return;
+    }
+    else if (newView === 'doctor-forgot') {
+      navigate('/doctor/forgot-password');
+      return;
+    }
+    else if (newView === 'hospital-forgot') {
+      navigate('/hospital/forgot-password');
       return;
     }
 
@@ -175,11 +183,11 @@ export default function AuthPortal({ role = 'general_users', view = 'login' }) {
 
   // Dynamic header badge based on route role
   const portalTitle =
-    role === 'doctors'
+    role === 'doctor'
       ? 'Doctor Portal'
-      : role === 'hospital'
+      : role === 'hospital_organisation'
       ? 'Hospital Portal'
-      : 'Patient Portal';
+      : 'User Portal';
 
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-tr from-blue-400 via-blue-500 to-indigo-600 p-4 relative overflow-hidden">
@@ -216,13 +224,15 @@ export default function AuthPortal({ role = 'general_users', view = 'login' }) {
             onSubmit={onRegister}
             onNavigate={handleViewChange}
             loading={loading}
+            currentRole={role}
           />
         )}
-        {view === 'forgot' && (
+        {view === 'user-forgot' || view === 'doctor-forgot' || view === 'hospital-forgot' && (
           <ForgotPasswordView
             onSubmit={onForgot}
             onNavigate={handleViewChange}
             loading={loading}
+            currentRole={role}
           />
         )}
         {view === 'reset' && (
@@ -230,6 +240,7 @@ export default function AuthPortal({ role = 'general_users', view = 'login' }) {
             onSubmit={onReset}
             onNavigate={handleViewChange}
             loading={loading}
+            currentRole={role}
           />
         )}
       </div>

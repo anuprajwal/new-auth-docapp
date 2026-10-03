@@ -43,15 +43,15 @@ export default function App() {
         {/* Utility / Password Management */}
         <Route 
           path="/user/forgot-password" 
-          element={<AuthPortal role="general_user" view="forgot" />} 
+          element={<AuthPortal role="general_user" view="user-forgot" />} 
         />
         <Route 
           path="/doctor/forgot-password" 
-          element={<AuthPortal role="doctor" view="forgot" />} 
+          element={<AuthPortal role="doctor" view="doctor-forgot" />} 
         />
         <Route 
           path="/hospital/forgot-password" 
-          element={<AuthPortal role="hospital_organisation" view="forgot" />} 
+          element={<AuthPortal role="hospital_organisation" view="hospital-forgot" />} 
         />
 
         {/* Catch-all Fallback */}
