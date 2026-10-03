@@ -11,6 +11,8 @@ export default function LoginView({ onSubmit, onNavigate, loading, currentRole }
     onSubmit({ email, password });
   };
 
+  const roleLabel = currentRole === 'doctor' ? 'doctor' : currentRole === 'hospital_organisation' ? 'hospital' : 'user';
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <InputField label="Email Address" type="email" icon={Mail} placeholder="name@hospital.com" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -21,7 +23,7 @@ export default function LoginView({ onSubmit, onNavigate, loading, currentRole }
           <input type="checkbox" className="rounded text-blue-600 border-slate-300 w-4 h-4" />
           Remember Me
         </label>
-        <button type="button" onClick={() => onNavigate('forgot')} className="text-blue-600 hover:underline">Forgot Password?</button>
+        <button type="button" onClick={() => onNavigate(`${roleLabel}-forgot`)} className="text-blue-600 hover:underline">Forgot Password?</button>
       </div>
 
       <button type="submit" disabled={loading} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition active:scale-[0.99] disabled:opacity-50 flex justify-center items-center gap-2 text-sm">
