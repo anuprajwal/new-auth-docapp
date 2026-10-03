@@ -21,6 +21,10 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
   const [success, setSuccess] = useState('');
   const [contextData, setContextData] = useState({ id: '', hash: '' });
 
+
+  const roleLabel = currentRole === 'doctor' ? 'doctor' : currentRole === 'hospital_organisation' ? 'hospital' : 'user';
+
+
   useEffect(() => {
     const fullPath = decodeURIComponent(location.pathname);
     const segments = fullPath.split('/').filter(Boolean);
@@ -64,8 +68,7 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
     }
 
     // Determine current route prefix ('patient', 'doctor', or 'hospital')
-    const currentPrefix = location.pathname.split('/')[1] || 'patient';
-    navigate(`/${currentPrefix}/${newView}`);
+    navigate(`/${roleLabel}/${newView}`);
   };
 
   const onLogin = async (payload) => {
@@ -167,12 +170,16 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
       });
 
       const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.message || 'Failed to reset password. Link may be expired.');
+      if (!response.ok){
+        setError(data.message || 'Failed to reset password. Link may be expired.');
+        setTimeout(() => {
+          handleViewChange(`${roleLabel}/login`);
+        }, 2000);
 
+      }
       setSuccess('Password updated successfully! Redirecting to login...');
       setTimeout(() => {
-        handleViewChange('login');
+        handleViewChange(`${roleLabel}/login`);
       }, 2000);
     } catch (err) {
       setError(err.message);

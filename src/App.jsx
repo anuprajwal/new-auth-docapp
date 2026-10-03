@@ -60,14 +60,6 @@ export default function App() {
           path="/:hash/:id"
           element={<AuthPortal view="reset" />}
         />
-        {/* <Route 
-          path="/doctor/reset-password/:hash/:id"
-          element={<AuthPortal role="doctor" view="reset" />}
-        />
-        <Route 
-          path="/hospital/reset-password/:hash/:id"
-          element={<AuthPortal role="hospital_organisation" view="reset" />}
-        /> */}
 
         {/* Catch-all Fallback */}
         <Route path="*" element={<Navigate to="/patient/login" replace />} />
