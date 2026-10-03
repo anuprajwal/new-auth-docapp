@@ -130,7 +130,7 @@ export default function AuthPortal() {
         body: JSON.stringify({ ...payload, role }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Unable to process request.');
+      if (!response.ok) throw new Error(data.error || 'Unable to process request.');
 
       return true;
     } catch (err) { 
@@ -180,7 +180,7 @@ export default function AuthPortal() {
           <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mb-3 border border-blue-100">
             <Lock size={26} className="stroke-[2.5]" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Hospital Management System</h2>
+          <h2 className="text-2xl font-bold text-slate-800 tracking-tight">DocApp.com</h2>
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mt-1">
             {role === 'general_user' ? 'Patient Portal' : role === 'doctor' ? 'Doctor Portal' : 'Admin Operations'}
           </p>
