@@ -11,7 +11,7 @@ export default function LoginView({ onSubmit, onNavigate, loading, currentRole }
     onSubmit({ email, password });
   };
 
-  const roleLabel = currentRole === 'doctor' ? 'doctor' : currentRole === 'hospital_organisation' ? 'hospital' : 'user';
+  const roleLabel = currentRole === 'doctor' ? 'doctor' : currentRole === 'hospital_organisation' ? 'hospital' : 'patient';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

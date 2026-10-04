@@ -22,7 +22,7 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
   const [contextData, setContextData] = useState({ id: '', hash: '' });
 
 
-  const roleLabel = role === 'doctor' ? 'doctor' : role === 'hospital_organisation' ? 'hospital' : 'user';
+  const roleLabel = role === 'doctor' ? 'doctor' : role === 'hospital_organisation' ? 'hospital' : 'patient';
 
 
   useEffect(() => {
