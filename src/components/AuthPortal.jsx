@@ -55,7 +55,7 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
   const handleViewChange = (newView) => {
     resetMessages();
     if (newView === 'user-forgot') {
-      navigate('/user/forgot-password');
+      navigate('/patient/forgot-password');
       return;
     }
     else if (newView === 'doctor-forgot') {

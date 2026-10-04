@@ -57,7 +57,7 @@ export default function App() {
 
         {/* Password Reset Route with Hash and ID */}
         <Route 
-          path="/:hash/:id"
+          path="/reset-password/:hash/:id"
           element={<AuthPortal view="reset" />}
         />
 
