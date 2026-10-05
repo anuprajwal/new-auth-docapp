@@ -42,8 +42,8 @@ export default function App() {
 
         {/* Utility / Password Management */}
         <Route 
-          path="/user/forgot-password" 
-          element={<AuthPortal role="general_user" view="user-forgot" />} 
+          path="/patient/forgot-password" 
+          element={<AuthPortal role="general_user" view="patient-forgot" />} 
         />
         <Route 
           path="/doctor/forgot-password" 

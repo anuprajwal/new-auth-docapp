@@ -54,7 +54,7 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
   // Switch between Login, Register, or Forgot view while retaining the current role route prefix
   const handleViewChange = (newView) => {
     resetMessages();
-    if (newView === 'user-forgot') {
+    if (newView === 'patient-forgot') {
       navigate('/patient/forgot-password');
       return;
     }
@@ -93,9 +93,9 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
 
       setTimeout(() => {
         let targetUrl = 'https://users.docapp.co.in';
-        if (role === 'doctors') {
+        if (role === 'doctor') {
           targetUrl = 'https://doctors.docapp.co.in';
-        } else if (role === 'hospital') {
+        } else if (role === 'hospital_organisation') {
           targetUrl = 'https://hospitals.docapp.co.in';
         }
         window.location.href = targetUrl;
@@ -234,7 +234,7 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
             currentRole={role}
           />
         )}
-        {view === 'forgot' && (
+        {view === 'patient-forgot' || view === 'doctor-forgot' || view === 'hospital-forgot' && (
           <ForgotPasswordView
             onSubmit={onForgot}
             onNavigate={handleViewChange}
