@@ -13,6 +13,7 @@ import ResetPasswordView from './ResetPasswordView';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function AuthPortal({ role = 'general_user', view = 'login' }) {
+  console.log(`AuthPortal initialized with role: ${role}, view: ${view}`);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -53,7 +54,6 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
 
   // Switch between Login, Register, or Forgot view while retaining the current role route prefix
   const handleViewChange = (newView) => {
-    console.log(`Navigating to view: ${newView} for role: ${role}`);
     resetMessages();
     if (newView === 'patient-forgot') {
       navigate('/patient/forgot-password');
@@ -235,7 +235,7 @@ export default function AuthPortal({ role = 'general_user', view = 'login' }) {
             currentRole={role}
           />
         )}
-        {view === 'patient-forgot' || view === 'doctor-forgot' || view === 'hospital-forgot' && (
+        {(view === 'patient-forgot' || view === 'doctor-forgot' || view === 'hospital-forgot') && (
           <ForgotPasswordView
             onSubmit={onForgot}
             onNavigate={handleViewChange}
